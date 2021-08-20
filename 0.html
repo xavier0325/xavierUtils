@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+	<html lang="zh">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+			<title>天气查询</title>
+			<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+				integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+				crossorigin="anonymous">
+			<style>
+				body{height: fit-content;}
+				th{text-align: center;}
+				h2 #info{color: aliceblue;}
+				#location{vertical-align: text-bottom;}
+				thead th img{vertical-align: text-bottom;}
+			</style>
+			<script>
+				function download(data){
+					var oT1 = document.getElementById("t1");
+					var oInfo = document.getElementById("info");
+					oInfo.innerHTML = `<img id="location" src="img/location.png" alt="location" width="24px" height="24px"/>城市：${data.forecasts[0].province}/${data.forecasts[0].city}`;
+					//天气情况取出
+					var arr = data.forecasts[0].casts;
+					var str = ``;
+					for(var i = 0; i < arr.length; i++){
+						str += `<tr>
+									<td>${arr[i].date}</td>
+									<td>${arr[i].dayweather}</td>
+									<td>${arr[i].daywind}</td>
+									<td>${arr[i].daytemp}℃</td>
+								</tr>`
+					}
+					oT1.innerHTML = str;
+				}
+			</script>
+			<script>
+				window.onload = function(){
+					var oSearch = document.getElementById( "search");
+					var oCity = document.getElementById("city");
+					var parentOffBtn = window.parent.document.getElementById("iframeoff");
+					var parentAdivs = window.parent.document.getElementsByClassName("item");
+					
+					oSearch.onclick = function(){
+						if(!oCity.value){
+							alert("请输入城市名字");
+						}else{
+							var oScript = document.createElement("script");
+							oScript.src = `https://query.asilu.com/weather/gaode?city=${oCity.value}&callback=download`;
+							document.body.appendChild(oScript);
+						}
+					}
+					
+					oCity.onfocus = function(){
+						parentOffBtn.style.display = "none";
+						for(var i=0;i<parentAdivs.length;i++){
+							parentAdivs[i].style.visibility = 'hidden';
+						}
+					}
+					oCity.onblur = function(){
+						parentOffBtn.style.display = "block";
+						for(var i=0;i<parentAdivs.length;i++){
+							parentAdivs[i].style.visibility= 'visible';
+						}
+					}
+				}
+			</script>
+
+		</head>
+		<body>
+			<div class='container'>
+				<div class='panel panel-primary'>
+					<div class='panel-heading'>
+						<h2><p style="font-size: 19px;display: inline-block;vertical-align: middle;">天气查询</p>
+							<p id="info" class="pull-right small"></p>
+						</h2>
+					</div>
+					<div class='panel-body'>
+						<div class='form-group'>
+							<label for="city">城市名字:</label>
+							<input type="text" id="city" class='form-control' />
+						</div>
+						<button id='search' class='btn btn-info form-control'>查询该城市天气</button>
+						<br /><br />
+						<table class = 'table table-bordered table-hover text-center'>
+							<thead>
+								<tr>
+									<th><img src="img/date.png" alt="date"/>日期</th>
+									<th><img src="img/weather.png" alt="wheather">天气</th>
+									<th><img src="img/wind.png" alt="wind">风向</th>
+									<th><img src="img/temp.png" alt="temp">气温</th>
+								</tr>
+							</thead>
+							<tbody id = 't1'></tbody>
+						</table>
+					</div>
+					<div class='panel-footer text-center'>
+						<small>Copyright &copy; 2021 Xavier</small>
+
+					</div>
+				</div>
+			</div>
+
+		</body>
+	</html>

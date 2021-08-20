@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+	<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>翻译</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+			integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+			crossorigin="anonymous">
+			<style>
+				#en{overflow-x: hidden;height: auto;min-height: 70px;}
+				#zh{height: auto;min-height: 50px;}
+			</style>
+			<script>
+				function download(res){
+					var oZh = document.getElementById("zh");
+					if(res.error == "54000"){
+						alert("全是空格翻译不了呐T_T");
+					}else{
+						oZh.innerHTML = res.data;
+					}
+				}
+			</script>
+			<script>
+				window.onload = function(){
+					var oEn = document.getElementById("en");
+					var oBtn = document.getElementById("translate");
+					var parentOffBtn = window.parent.document.getElementById("iframeoff");
+					var parentAdivs = window.parent.document.getElementsByClassName("item");
+					
+					
+					// oEn.innerHTML = "";
+					oBtn.onclick = function(){
+						if(!oEn.innerHTML){
+							alert("请输入翻译文本");
+						}else{
+							var oScript = document.createElement("script");
+							oScript.src = `https://api.asilu.com/fanyi/?&callback=download&q=${oEn.innerHTML}&type=&_1501665233671`;
+							document.body.appendChild(oScript);
+						}
+					}
+					
+					oEn.onfocus = function(){
+						parentOffBtn.style.display = "none";
+						for(var i=0;i<parentAdivs.length;i++){
+							parentAdivs[i].style.visibility = 'hidden';
+						}
+					}
+					oEn.onblur = function(){
+						parentOffBtn.style.display = "block";
+						for(var i=0;i<parentAdivs.length;i++){
+							parentAdivs[i].style.visibility = 'visible';
+						}
+					}
+					
+				}	
+			</script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3>翻译</h3>
+				</div>
+				<div class="panel-body">
+					<div class='form-group'>
+						<label for="en">其它语言：</label>
+						<div id="en" class="form-control" contenteditable="true">
+							
+						</div>
+					</div>
+					<button id="translate" class="btn btn-info form-control">翻译</button>
+					<br /><br />
+					<div class='form-group'>
+						<label for='zh'>中文：</label>
+						<div id="zh" class="form-control">
+							
+						</div>
+					</div>
+				</div>
+				<div class='panel-footer text-center'>
+					<small>Copyright &copy; 2021 Xavier</small>
+				
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
